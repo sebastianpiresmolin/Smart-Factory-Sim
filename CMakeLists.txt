@@ -21,6 +21,11 @@ add_executable(smart_factory_sim
         src/main.cpp
         src/FactoryController.cpp
         src/MqttClientWrapper.cpp
+        include/SensorMessage.h
+        include/MachineController.h
+        include/MqttClientWrapper.h
+        include/FactoryController.h
+        src/MachineController.cpp
 )
 
 target_link_libraries(smart_factory_sim PRIVATE

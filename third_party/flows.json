@@ -1,0 +1,31 @@
+[
+    {
+        "id": "8d101cb2b146a9e9",
+        "type": "inject",
+        "z": "31c9a632d0187377",
+        "name": "sensor_0",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"temp\":24.7}",
+        "payloadType": "json",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "2efb5e81f97ce214"
+            ]
+        ]
+    }
+]
