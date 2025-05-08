@@ -9,4 +9,8 @@ add_executable(smart_factory_sim
         src/main.cpp
 )
 
+target_link_libraries(smart_factory_sim PRIVATE
+        paho-mqttpp3
+        paho-mqtt3as
+)
 target_include_directories(smart_factory_sim PRIVATE include)
