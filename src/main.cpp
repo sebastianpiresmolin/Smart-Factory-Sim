@@ -1,6 +1,8 @@
-﻿#include <iostream>
+﻿#include "FactoryController.h"
 
 int main() {
-    std::cout << "Smart Factory Simulator starting..." << std::endl;
+    FactoryController controller;
+    controller.run();
+
     return 0;
 }
