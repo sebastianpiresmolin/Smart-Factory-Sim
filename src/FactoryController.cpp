@@ -20,18 +20,27 @@ void FactoryController::handleMessage(const std::string& topic, const std::strin
 
 std::string FactoryController::parseMachineId(const std::string& topic) {
     std::istringstream stream(topic);
-    std::string segment;
-    getline(stream, segment, '/'); // factory
-    getline(stream, segment, '/'); // machineId
-    return segment;
+    std::string part1, part2;
+    if (getline(stream, part1, '/') && getline(stream, part2, '/')) {
+        return part2;
+    }
+    return "";
 }
 
 std::string FactoryController::parseSensorType(const std::string& topic) {
     std::istringstream stream(topic);
-    std::string segment;
-    getline(stream, segment, '/'); // factory
-    getline(stream, segment, '/'); // machineId
-    getline(stream, segment, '/'); // sensorType
-    return segment;
+    std::string part1, part2, part3;
+    if (getline(stream, part1, '/') && getline(stream, part2, '/') && getline(stream, part3, '/')) {
+        return part3;
+    }
+    return "";
+}
+
+std::shared_ptr<MachineController> FactoryController::getMachine(const std::string& machineId) const {
+    auto it = machines.find(machineId);
+    if (it != machines.end()) {
+        return it->second;
+    }
+    return nullptr;
 }
 

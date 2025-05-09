@@ -9,7 +9,11 @@
 
 class FactoryController {
 public:
-    void handleMessage(const std::string& topic, const std::string& payload);
+    virtual ~FactoryController() = default;
+
+    virtual void handleMessage(const std::string& topic, const std::string& payload);
+
+    std::shared_ptr<MachineController> getMachine(const std::string& machineId) const;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<MachineController>> machines;
