@@ -87,3 +87,4 @@ third_party/**/install/
 .idea/
 cmake-build-release/
 
+/Testing/Temporary/CTestCostData.txt
