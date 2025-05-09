@@ -7,15 +7,14 @@ find_package(nlohmann_json CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include_directories(
-        "C:/Users/Sebastian Molin/SmartFactoryPahoCpp/include"
-        "C:/Users/Sebastian Molin/paho-install/include"
-)
+set(PAHO_C_INSTALL "${CMAKE_SOURCE_DIR}/third-party/paho.mqtt.c/install")
+set(PAHO_CPP_BUILD "${CMAKE_SOURCE_DIR}/third-party/paho.mqtt.cpp/build")
 
 link_directories(
-        "C:/Users/Sebastian Molin/SmartFactoryPahoCpp/cppbuild/src/Release"
-        "C:/Users/Sebastian Molin/paho-install/lib"
+        ${PAHO_C_INSTALL}/lib
+        ${PAHO_CPP_BUILD}/src/Release
 )
+
 
 add_executable(smart_factory_sim
         src/main.cpp
