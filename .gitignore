@@ -84,3 +84,6 @@ Thumbs.db
 third_party/**/build/
 third_party/**/install/
 
+.idea/
+cmake-build-release/
+
