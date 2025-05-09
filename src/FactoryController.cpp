@@ -1,45 +1,46 @@
 ﻿#include "FactoryController.h"
-#include "MqttClientWrapper.h"
-#include <nlohmann/json.hpp>
+#include <sstream>
 #include <iostream>
 
-using json = nlohmann::json;
+void FactoryController::handleMessage(const std::string& topic, const std::string& payload) {
+    std::string machineId = parseMachineId(topic);
+    std::string sensorType = parseSensorType(topic);
 
-class TempCallback : public mqtt::callback {
-    MqttClientWrapper& client;
-
-public:
-    TempCallback(MqttClientWrapper& clientRef) : client(clientRef) {}
-
-    void message_arrived(mqtt::const_message_ptr msg) override {
-        try {
-            auto payload = json::parse(msg->to_string());
-            if (payload.contains("temp") && payload["temp"].is_number()) {
-                double temp = payload["temp"];
-                std::cout << "[Sensor] Temp: " << temp << "\n";
-
-                if (temp > 25.0) {
-                    std::cout << "⚠️ Temp high. Sending command: FAN ON\n";
-                    client.publish("factory/fan", "ON");
-                }
-            }
-        } catch (const std::exception& e) {
-            std::cerr << "JSON parse error: " << e.what() << "\n";
-        }
+    if (machineId.empty() || sensorType.empty()) {
+        std::cerr << "Invalid topic: " << topic << "\n";
+        return;
     }
-};
 
-FactoryController::FactoryController() {}
+    if (machines.find(machineId) == machines.end()) {
+        machines[machineId] = std::make_shared<MachineController>(machineId);
+    }
 
-void FactoryController::run() {
-    MqttClientWrapper mqttClient("tcp://localhost:1883", "factory_controller");
-
-    TempCallback cb(mqttClient);
-    mqttClient.setCallback(cb);
-    mqttClient.connect();
-    mqttClient.subscribe("factory/temperature");
-
-    std::cout << "[MQTT] Subscribed. Press Enter to exit.\n";
-    std::cin.get();
-    mqttClient.disconnect();
+    machines[machineId]->handleSensor(sensorType, payload);
 }
+
+std::string FactoryController::parseMachineId(const std::string& topic) {
+    std::istringstream stream(topic);
+    std::string part1, part2;
+    if (getline(stream, part1, '/') && getline(stream, part2, '/')) {
+        return part2;
+    }
+    return "";
+}
+
+std::string FactoryController::parseSensorType(const std::string& topic) {
+    std::istringstream stream(topic);
+    std::string part1, part2, part3;
+    if (getline(stream, part1, '/') && getline(stream, part2, '/') && getline(stream, part3, '/')) {
+        return part3;
+    }
+    return "";
+}
+
+std::shared_ptr<MachineController> FactoryController::getMachine(const std::string& machineId) const {
+    auto it = machines.find(machineId);
+    if (it != machines.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+

@@ -2,25 +2,45 @@
 
 project(SmartFactorySim VERSION 0.1 LANGUAGES CXX)
 
-find_package(nlohmann_json CONFIG REQUIRED)
-
+# Use C++17
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Enable testing
+include(CTest)
+enable_testing()
+
+# vcpkg dependencies
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
+
+# Third-party paths
+set(PAHO_CPP_BUILD ${CMAKE_SOURCE_DIR}/third_party/paho.mqtt.cpp/build)
+set(PAHO_C_INSTALL ${CMAKE_SOURCE_DIR}/third_party/paho.mqtt.c/install)
+
+# Include directories
 include_directories(
-        "C:/Users/Sebastian Molin/SmartFactoryPahoCpp/include"
-        "C:/Users/Sebastian Molin/paho-install/include"
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/third_party/paho.mqtt.cpp/include
+        ${PROJECT_SOURCE_DIR}/third_party/paho.mqtt.c/src
 )
 
+# Link directories
 link_directories(
-        "C:/Users/Sebastian Molin/SmartFactoryPahoCpp/cppbuild/src/Release"
-        "C:/Users/Sebastian Molin/paho-install/lib"
+        ${PAHO_CPP_BUILD}/src/Release
+        ${PAHO_C_INSTALL}/lib
 )
 
+# Main application executable
 add_executable(smart_factory_sim
         src/main.cpp
         src/FactoryController.cpp
         src/MqttClientWrapper.cpp
+        src/MachineController.cpp
+        include/FactoryController.h
+        include/MachineController.h
+        include/MqttClientWrapper.h
+        include/SensorMessage.h
 )
 
 target_link_libraries(smart_factory_sim PRIVATE
@@ -30,5 +50,4 @@ target_link_libraries(smart_factory_sim PRIVATE
         nlohmann_json::nlohmann_json
 )
 
-
-target_include_directories(smart_factory_sim PRIVATE include)
+add_subdirectory(tests)
