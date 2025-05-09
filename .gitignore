@@ -35,3 +35,52 @@
 node_modules
 
 *.paho
+
+# Build directories
+/cmake-build-*/
+build/
+/out/
+
+# CLion project files
+.idea/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.obj
+*.o
+*.pdb
+
+# Logs and generated files
+*.log
+
+# vcpkg-related
+/vcpkg_installed/
+/vcpkg/buildtrees/
+/vcpkg/packages/
+
+# Catch2 or test binaries
+/tests
+
+# User-specific files
+*.user
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Third-party builds (keep source but ignore builds)
+third_party/**/build/
+third_party/**/install/
+
