@@ -3,7 +3,7 @@
 project(SmartFactorySim VERSION 0.1 LANGUAGES CXX)
 
 # Use C++17
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Enable testing
@@ -41,6 +41,8 @@ add_executable(smart_factory_sim
         include/MachineController.h
         include/MqttClientWrapper.h
         include/SensorMessage.h
+        src/Machine.cpp
+        include/Machine.h
 )
 
 target_link_libraries(smart_factory_sim PRIVATE

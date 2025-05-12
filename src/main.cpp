@@ -1,7 +1,11 @@
 ﻿#include "MqttClientWrapper.h"
+#include "FactoryController.h"
 
 int main() {
+    auto factoryController = std::make_unique<FactoryController>();
+
     MqttClientWrapper mqtt("tcp://localhost:1883", "smart_factory_simulator", "factory/+/+");
+    mqtt.setController(factoryController.get());
 
     try {
         mqtt.start();
