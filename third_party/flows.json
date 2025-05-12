@@ -1,9 +1,48 @@
 [
     {
+        "id": "0eb0151d845fe749",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a8f20d885814e0e2",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
         "id": "8d101cb2b146a9e9",
         "type": "inject",
-        "z": "31c9a632d0187377",
-        "name": "sensor_0",
+        "z": "0eb0151d845fe749",
+        "name": "temp_sensor_0",
         "props": [
             {
                 "p": "topic",
@@ -18,14 +57,267 @@
         "once": true,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"temp\":24.7}",
+        "payload": "{\"temp\":7.8}",
         "payloadType": "json",
-        "x": 130,
-        "y": 80,
+        "x": 250,
+        "y": 120,
         "wires": [
             [
-                "2efb5e81f97ce214"
+                "d949a254be4947fb"
             ]
         ]
+    },
+    {
+        "id": "d949a254be4947fb",
+        "type": "mqtt out",
+        "z": "0eb0151d845fe749",
+        "name": "",
+        "topic": "factory/machine0/temp",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f20d885814e0e2",
+        "x": 460,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "8a8dd1cc74a2bf92",
+        "type": "inject",
+        "z": "0eb0151d845fe749",
+        "name": "temp_sensor_1",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"temp\":30.7}",
+        "payloadType": "json",
+        "x": 750,
+        "y": 120,
+        "wires": [
+            [
+                "4668f32c27b5e8b2"
+            ]
+        ]
+    },
+    {
+        "id": "4668f32c27b5e8b2",
+        "type": "mqtt out",
+        "z": "0eb0151d845fe749",
+        "name": "",
+        "topic": "factory/machine1/temp",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f20d885814e0e2",
+        "x": 960,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "1cfbc977e10f02c8",
+        "type": "mqtt out",
+        "z": "0eb0151d845fe749",
+        "name": "",
+        "topic": "factory/machine2/temp",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f20d885814e0e2",
+        "x": 1460,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "f952a60632ea454b",
+        "type": "inject",
+        "z": "0eb0151d845fe749",
+        "name": "temp_sensor_2",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"temp\":87.3}",
+        "payloadType": "json",
+        "x": 1250,
+        "y": 120,
+        "wires": [
+            [
+                "1cfbc977e10f02c8"
+            ]
+        ]
+    },
+    {
+        "id": "88ae4b1ca959eab8",
+        "type": "inject",
+        "z": "0eb0151d845fe749",
+        "name": "vib_sensor_0",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"vibration\":3.8}",
+        "payloadType": "json",
+        "x": 240,
+        "y": 180,
+        "wires": [
+            [
+                "427fcb07971eaf52"
+            ]
+        ]
+    },
+    {
+        "id": "427fcb07971eaf52",
+        "type": "mqtt out",
+        "z": "0eb0151d845fe749",
+        "name": "",
+        "topic": "factory/machine0/vibration",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f20d885814e0e2",
+        "x": 470,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "bd9405b0ba9d9c56",
+        "type": "inject",
+        "z": "0eb0151d845fe749",
+        "name": "vib_sensor_1",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"vibration\":10.5}",
+        "payloadType": "json",
+        "x": 740,
+        "y": 180,
+        "wires": [
+            [
+                "c596c34fc0e7f850"
+            ]
+        ]
+    },
+    {
+        "id": "c596c34fc0e7f850",
+        "type": "mqtt out",
+        "z": "0eb0151d845fe749",
+        "name": "",
+        "topic": "factory/machine1/vibration",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f20d885814e0e2",
+        "x": 970,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "8d75c9806a75bf9a",
+        "type": "inject",
+        "z": "0eb0151d845fe749",
+        "name": "vib_sensor_2",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"vibration\":1.2}",
+        "payloadType": "json",
+        "x": 1240,
+        "y": 180,
+        "wires": [
+            [
+                "c74abd2208575395"
+            ]
+        ]
+    },
+    {
+        "id": "c74abd2208575395",
+        "type": "mqtt out",
+        "z": "0eb0151d845fe749",
+        "name": "",
+        "topic": "factory/machine2/vibration",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f20d885814e0e2",
+        "x": 1470,
+        "y": 180,
+        "wires": []
     }
 ]
