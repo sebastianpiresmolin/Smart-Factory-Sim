@@ -53,9 +53,9 @@ std::string MachineController::getMachineId() const {
 }
 
 bool MachineController::isOverheating() const {
-    return machine->getSensorValue("temp") > 80.0;
+    return machine->isOverheating();
 }
 
 bool MachineController::isTooCold() const {
-    return machine->getSensorValue("temp") < 10.0;
+    return machine->isTooCold();
 }
