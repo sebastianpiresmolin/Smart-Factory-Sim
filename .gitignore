@@ -34,8 +34,6 @@
 #NPM
 node_modules
 
-*.paho
-
 # Build directories
 /cmake-build-*/
 build/
