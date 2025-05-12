@@ -8,6 +8,8 @@ MachineController::MachineController(const std::string& id)
 void MachineController::handleSensor(const std::string& sensorType, const std::string& payload) {
     if (sensorType == "temp") {
         handleTemperature(payload);
+    } else if (sensorType == "vibration") {
+        handleVibration(payload);
     } else {
         std::cout << "[" << machineId << "] Unhandled sensor type: " << sensorType << "\n";
     }
@@ -38,6 +40,26 @@ void MachineController::handleTemperature(const std::string& payload) {
     }
 }
 
+void MachineController::handleVibration(const std::string& payload) {
+    try {
+        auto json = nlohmann::json::parse(payload);
+        if (json.contains("vibration")) {
+            double vibration = json["vibration"];
+            machine->setSensorValue("vibration", vibration);
+
+            std::cout << "[" << machineId << "] Live Vibration: " << vibration << "\n";
+
+            if (machine->isExcessiveVibration()) {
+                std::cout << "[" << machineId << "] WARNING: Excessive vibration detected!\n";
+            } else {
+                std::cout << "[" << machineId << "] Vibration level is normal.\n";
+            }
+        }
+    } catch (const std::exception& ex) {
+        std::cerr << "[" << machineId << "] Failed to parse vibration JSON: " << ex.what() << "\n";
+    }
+}
+
 
 std::unordered_map<std::string, double> MachineController::getAllSensorValues() const {
     return machine->getAllSensorValues();
@@ -58,4 +80,8 @@ bool MachineController::isOverheating() const {
 
 bool MachineController::isTooCold() const {
     return machine->isTooCold();
+}
+
+bool MachineController::isExcessiveVibration() const {
+    return machine->isExcessiveVibration();
 }
