@@ -10,6 +10,8 @@ void MachineController::handleSensor(const std::string& sensorType, const std::s
         handleTemperature(payload);
     } else if (sensorType == "vibration") {
         handleVibration(payload);
+    } else if (sensorType == "state") {
+        handleState(payload);
     } else {
         std::cout << "[" << machineId << "] Unhandled sensor type: " << sensorType << "\n";
     }
@@ -17,6 +19,11 @@ void MachineController::handleSensor(const std::string& sensorType, const std::s
 
 void MachineController::handleTemperature(const std::string& payload) {
     try {
+        if (!machine->isRunning()) {
+            std::cout << "[" << machineId << "] Machine is OFF. Ignoring sensor data.\n";
+            return;
+        }
+
         auto json = nlohmann::json::parse(payload);
         if (json.contains("temp")) {
             double temperature = json["temp"];
@@ -42,6 +49,11 @@ void MachineController::handleTemperature(const std::string& payload) {
 
 void MachineController::handleVibration(const std::string& payload) {
     try {
+        if (!machine->isRunning()) {
+            std::cout << "[" << machineId << "] Machine is OFF. Ignoring sensor data.\n";
+            return;
+        }
+
         auto json = nlohmann::json::parse(payload);
         if (json.contains("vibration")) {
             double vibration = json["vibration"];
@@ -57,6 +69,24 @@ void MachineController::handleVibration(const std::string& payload) {
         }
     } catch (const std::exception& ex) {
         std::cerr << "[" << machineId << "] Failed to parse vibration JSON: " << ex.what() << "\n";
+    }
+}
+
+void MachineController::handleState(const std::string& payload) {
+    try {
+        auto json = nlohmann::json::parse(payload);
+        if (json.contains("state")) {
+            std::string state = json["state"];
+            machine->setSensorValue("state", state == "start" ? 1.0 : 0.0);  // Store numeric form
+
+            if (machine->isRunning()) {
+                std::cout << "[" << machineId << "] Machine is RUNNING\n";
+            } else {
+                std::cout << "[" << machineId << "] Machine is STOPPED\n";
+            }
+        }
+    } catch (const std::exception& ex) {
+        std::cerr << "[" << machineId << "] Failed to parse state JSON: " << ex.what() << "\n";
     }
 }
 

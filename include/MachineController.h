@@ -27,6 +27,7 @@ private:
 
     void handleTemperature(const std::string& payload);
     void handleVibration(const std::string& payload);
+    void handleState(const std::string& payload);
 };
 
 #endif // MACHINECONTROLLER_H
