@@ -44,3 +44,21 @@ std::shared_ptr<MachineController> FactoryController::getMachine(const std::stri
     return nullptr;
 }
 
+const std::unordered_map<std::string, std::shared_ptr<MachineController>>& FactoryController::getMachines() const {
+    return machines;
+}
+
+std::unordered_map<std::string, std::unordered_map<std::string, double>> FactoryController::getSensorStates() const {
+    std::unordered_map<std::string, std::unordered_map<std::string, double>> snapshot;
+
+    for (const auto& [id, controller] : machines) {
+        auto machine = controller->getMachine();
+        if (machine) {
+            snapshot[id] = machine->getAllSensorValues();
+        }
+    }
+
+    return snapshot;
+}
+
+

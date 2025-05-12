@@ -3,23 +3,27 @@
 
 #pragma once
 #include <string>
+#include <memory>
+#include "Machine.h"
 
 class MachineController {
 public:
     explicit MachineController(const std::string& id);
     void handleSensor(const std::string& sensorType, const std::string& payload);
 
-    double getLastTemperature() const;
-    bool isOverheating() const;
+    std::shared_ptr<Machine> getMachine() const;
     std::string getMachineId() const;
+
+    bool isOverheating() const;
     bool isTooCold() const;
+
+    std::unordered_map<std::string, double> getAllSensorValues() const;
 
 private:
     std::string machineId;
-    double lastTemperature = 0.0;
-    bool overheating = false;
-    bool tooCold = false;
+    std::shared_ptr<Machine> machine;
 
     void handleTemperature(const std::string& payload);
 };
-#endif //MACHINECONTROLLER_H
+
+#endif // MACHINECONTROLLER_H

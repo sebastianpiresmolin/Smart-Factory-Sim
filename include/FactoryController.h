@@ -13,7 +13,10 @@ public:
 
     virtual void handleMessage(const std::string& topic, const std::string& payload);
 
+    std::unordered_map<std::string, std::unordered_map<std::string, double>> getSensorStates() const;
+
     std::shared_ptr<MachineController> getMachine(const std::string& machineId) const;
+    const std::unordered_map<std::string, std::shared_ptr<MachineController>>& getMachines() const;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<MachineController>> machines;

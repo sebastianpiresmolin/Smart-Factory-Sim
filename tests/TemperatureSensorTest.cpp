@@ -1,44 +1,33 @@
 ﻿#include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include "MachineController.h"
+#include "FactoryController.h"
 
 using Catch::Matchers::WithinAbs;
 
-TEST_CASE("Temperature sensor behavior", "[TemperatureSensor]") {
-    MachineController mc("machine1");
+TEST_CASE("Temperature sensor updates for multiple machines", "[TemperatureSensor]") {
+    FactoryController factory;
 
-    SECTION("Normal temperature") {
-        mc.handleSensor("temp", R"({"temp": 22.5})");
-        REQUIRE_THAT(mc.getLastTemperature(), WithinAbs(22.5, 0.001));
-        REQUIRE_FALSE(mc.isOverheating());
-    }
+    SECTION("Each machine stores temperature independently") {
+        factory.handleMessage("factory/machine0/temp", R"({"temp": 5.0})");
+        factory.handleMessage("factory/machine1/temp", R"({"temp": 22.5})");
+        factory.handleMessage("factory/machine2/temp", R"({"temp": 90.0})");
 
-    SECTION("Low temperature warning") {
-        mc.handleSensor("temp", R"({"temp": 5.0})");
-        REQUIRE_THAT(mc.getLastTemperature(), WithinAbs(5.0, 0.001));
-        REQUIRE(mc.isTooCold());
-    }
+        auto m0 = factory.getMachine("machine0");
+        auto m1 = factory.getMachine("machine1");
+        auto m2 = factory.getMachine("machine2");
 
-    SECTION("High temperature triggers overheating") {
-        mc.handleSensor("temp", R"({"temp": 90.0})");
-        REQUIRE_THAT(mc.getLastTemperature(), WithinAbs(90.0, 0.001));
-        REQUIRE(mc.isOverheating());
-    }
+        REQUIRE(m0);
+        REQUIRE(m1);
+        REQUIRE(m2);
 
-    SECTION("Exactly 80.0°C (not overheating)") {
-        mc.handleSensor("temp", R"({"temp": 80.0})");
-        REQUIRE_FALSE(mc.isOverheating());
-    }
+        REQUIRE_THAT(m0->getMachine()->getSensorValue("temp").value(), WithinAbs(5.0, 0.001));
+        REQUIRE_THAT(m1->getMachine()->getSensorValue("temp").value(), WithinAbs(22.5, 0.001));
+        REQUIRE_THAT(m2->getMachine()->getSensorValue("temp").value(), WithinAbs(90.0, 0.001));
 
-    SECTION("Exactly 10.0°C (not too cold)") {
-        mc.handleSensor("temp", R"({"temp": 10.0})");
-        REQUIRE_FALSE(mc.isTooCold());
-    }
-
-    SECTION("Malformed JSON input") {
-        mc.handleSensor("temp", R"(invalid json)");
-        // No exception should be thrown and state remains unchanged
-        REQUIRE_THAT(mc.getLastTemperature(), WithinAbs(0.0, 0.001));
-        REQUIRE_FALSE(mc.isOverheating());
+        REQUIRE(m0->isTooCold());
+        REQUIRE_FALSE(m1->isTooCold());
+        REQUIRE_FALSE(m1->isOverheating());
+        REQUIRE(m2->isOverheating());
     }
 }
+

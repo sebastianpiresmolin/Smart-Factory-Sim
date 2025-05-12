@@ -2,7 +2,8 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-MachineController::MachineController(const std::string& id) : machineId(id) {}
+MachineController::MachineController(const std::string& id)
+    : machineId(id), machine(std::make_shared<Machine>(id)) {}
 
 void MachineController::handleSensor(const std::string& sensorType, const std::string& payload) {
     if (sensorType == "temp") {
@@ -16,16 +17,20 @@ void MachineController::handleTemperature(const std::string& payload) {
     try {
         auto json = nlohmann::json::parse(payload);
         if (json.contains("temp")) {
-            lastTemperature = json["temp"];
-            std::cout << "[" << machineId << "] Temperature: " << lastTemperature << "C\n";
+            double temperature = json["temp"];
+            machine->setSensorValue("temp", temperature);
 
-            tooCold = lastTemperature < 10.0;
-            overheating = lastTemperature > 80.0;
+            auto currentTemp = machine->getSensorValue("temp");
+            if (currentTemp) {
+                std::cout << "[" << machineId << "] Live Temp: " << *currentTemp << "°C\n";
 
-            if (overheating) {
-                std::cout << "[" << machineId << "] ⚠️ WARNING: Temperature too high!\n";
-            } else if (lastTemperature < 10.0) {
-                std::cout << "[" << machineId << "] ⚠️ WARNING: Temperature too low!\n";
+                if (machine->isOverheating()) {
+                    std::cout << "[" << machineId << "] WARNING: Temperature too high!\n";
+                } else if (machine->isTooCold()) {
+                    std::cout << "[" << machineId << "] WARNING: Temperature too low!\n";
+                } else {
+                    std::cout << "[" << machineId << "] Temperature is normal.\n";
+                }
             }
         }
     } catch (const std::exception& ex) {
@@ -33,18 +38,24 @@ void MachineController::handleTemperature(const std::string& payload) {
     }
 }
 
-double MachineController::getLastTemperature() const {
-    return lastTemperature;
+
+std::unordered_map<std::string, double> MachineController::getAllSensorValues() const {
+    return machine->getAllSensorValues();
 }
 
-bool MachineController::isTooCold() const {
-    return tooCold;
-}
 
-bool MachineController::isOverheating() const {
-    return overheating;
+std::shared_ptr<Machine> MachineController::getMachine() const {
+    return machine;
 }
 
 std::string MachineController::getMachineId() const {
     return machineId;
+}
+
+bool MachineController::isOverheating() const {
+    return machine->getSensorValue("temp") > 80.0;
+}
+
+bool MachineController::isTooCold() const {
+    return machine->getSensorValue("temp") < 10.0;
 }
