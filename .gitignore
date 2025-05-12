@@ -70,9 +70,6 @@ install_manifest.txt
 /vcpkg/buildtrees/
 /vcpkg/packages/
 
-# Catch2 or test binaries
-/tests
-
 # User-specific files
 *.user
 *.swp
