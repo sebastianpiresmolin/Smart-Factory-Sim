@@ -27,6 +27,12 @@ std::unordered_map<std::string, double> Machine::getAllSensorValues() const {
     return sensors;
 }
 
+bool Machine::isExcessiveVibration() const {
+    auto it = sensors.find("vibration");
+    return it != sensors.end() && it->second > 5.0;
+}
+
+
 bool Machine::isOverheating() const {
     return overheating;
 }

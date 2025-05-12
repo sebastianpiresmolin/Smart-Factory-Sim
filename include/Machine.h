@@ -17,6 +17,9 @@ public:
     bool isOverheating() const;
     bool isTooCold() const;
 
+    bool isExcessiveVibration() const;
+
+
     const std::string& getId() const;
 
 private:

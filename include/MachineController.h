@@ -17,6 +17,8 @@ public:
     bool isOverheating() const;
     bool isTooCold() const;
 
+    bool isExcessiveVibration() const;
+
     std::unordered_map<std::string, double> getAllSensorValues() const;
 
 private:
@@ -24,6 +26,7 @@ private:
     std::shared_ptr<Machine> machine;
 
     void handleTemperature(const std::string& payload);
+    void handleVibration(const std::string& payload);
 };
 
 #endif // MACHINECONTROLLER_H
