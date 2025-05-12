@@ -29,6 +29,7 @@ add_executable(factory_controller_tests
         ${PROJECT_SOURCE_DIR}/src/MachineController.cpp
         ${PROJECT_SOURCE_DIR}/src/Machine.cpp
         MachineTest.cpp
+        VibrationSensorTest.cpp
 )
 target_include_directories(factory_controller_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(factory_controller_tests PRIVATE Catch2::Catch2WithMain nlohmann_json::nlohmann_json)
@@ -43,7 +44,18 @@ target_include_directories(machine_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(machine_tests PRIVATE Catch2::Catch2WithMain)
 add_test(NAME MachineTests COMMAND machine_tests)
 
+add_executable(vibration_sensor_tests
+        ${PROJECT_SOURCE_DIR}/tests/VibrationSensorTest.cpp
+        ${PROJECT_SOURCE_DIR}/src/MachineController.cpp
+        ${PROJECT_SOURCE_DIR}/src/FactoryController.cpp
+        ${PROJECT_SOURCE_DIR}/src/Machine.cpp
+)
+
+target_include_directories(vibration_sensor_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(vibration_sensor_tests PRIVATE Catch2::Catch2WithMain nlohmann_json::nlohmann_json)
+add_test(NAME VibrationSensorTests COMMAND vibration_sensor_tests)
+
 # Optional meta target to build all test binaries
 add_custom_target(all_tests
-        DEPENDS machine_controller_tests temperature_sensor_tests factory_controller_tests machine_tests
+        DEPENDS machine_controller_tests temperature_sensor_tests factory_controller_tests machine_tests vibration_sensor_tests
 )
