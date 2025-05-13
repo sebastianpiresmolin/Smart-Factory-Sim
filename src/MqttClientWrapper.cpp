@@ -22,10 +22,14 @@ void MqttClientWrapper::stop() {
 
 void MqttClientWrapper::message_arrived(mqtt::const_message_ptr msg) {
     if (factoryController) {
-        factoryController->handleMessage(msg->get_topic(), msg->to_string());
+        try {
+            factoryController->handleMessage(msg->get_topic(), msg->get_payload());
 
-        auto snapshot = factoryController->getSensorStates();
-        publishSensorData("factory/state_snapshot", snapshot.dump(2)); // pretty-print
+            auto snapshot = factoryController->getSensorStates();
+            publishSensorData("factory/state_snapshot", snapshot.dump(2));
+        } catch (const std::exception& e) {
+            std::cerr << "Error processing message: " << e.what() << std::endl;
+        }
     }
 }
 
