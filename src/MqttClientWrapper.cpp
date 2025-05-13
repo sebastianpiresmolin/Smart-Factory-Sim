@@ -21,12 +21,18 @@ void MqttClientWrapper::stop() {
 }
 
 void MqttClientWrapper::message_arrived(mqtt::const_message_ptr msg) {
-    std::cout << "[MQTT] Message received: " << msg->get_topic() << " ? " << msg->to_string() << "\n";
-
     if (factoryController) {
         factoryController->handleMessage(msg->get_topic(), msg->to_string());
-    } else {
-        std::cerr << "[MQTT] Warning: FactoryController not set!\n";
+
+        auto snapshot = factoryController->getSensorStates();
+        publishSensorData("factory/state_snapshot", snapshot.dump(2)); // pretty-print
+    }
+}
+
+void MqttClientWrapper::publishSensorData(const std::string& topic, const std::string& message) {
+    if (client.is_connected()) {
+        auto msg = mqtt::make_message(topic, message);
+        client.publish(msg);
     }
 }
 

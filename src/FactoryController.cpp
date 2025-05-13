@@ -1,6 +1,7 @@
 ﻿#include "FactoryController.h"
 #include <sstream>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 void FactoryController::handleMessage(const std::string& topic, const std::string& payload) {
     std::string machineId = parseMachineId(topic);
@@ -48,13 +49,16 @@ const std::unordered_map<std::string, std::shared_ptr<MachineController>>& Facto
     return machines;
 }
 
-std::unordered_map<std::string, std::unordered_map<std::string, double>> FactoryController::getSensorStates() const {
-    std::unordered_map<std::string, std::unordered_map<std::string, double>> snapshot;
+nlohmann::json FactoryController::getSensorStates() const {
+    nlohmann::json snapshot;
 
     for (const auto& [id, controller] : machines) {
         auto machine = controller->getMachine();
         if (machine) {
-            snapshot[id] = machine->getAllSensorValues();
+            snapshot[id] = {
+                { "sensors", machine->getAllSensorValues() },
+                { "state", machine->isRunning() ? "running" : "stopped" }
+            };
         }
     }
 

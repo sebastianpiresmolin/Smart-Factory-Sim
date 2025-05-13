@@ -16,6 +16,8 @@ public:
 
     void message_arrived(mqtt::const_message_ptr msg) override;
 
+    void publishSensorData(const std::string& topic, const std::string& message);
+
 private:
     mqtt::async_client client;
     mqtt::connect_options connOpts;
