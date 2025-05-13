@@ -8,14 +8,17 @@ using Catch::Approx;
 using Catch::Matchers::WithinAbs;
 
 TEST_CASE("FactoryController handles new machine messages") {
-    FactoryController fc;
+    FactoryController factory;
+
+    // Start machine
+    factory.handleMessage("factory/machineX/state", R"({"state": "start"})");
 
     std::string topic = "factory/machineX/temp";
     std::string payload = R"({"temp": 42.0})";
 
-    fc.handleMessage(topic, payload);
+    factory.handleMessage(topic, payload);
 
-    auto mc = fc.getMachine("machineX");
+    auto mc = factory.getMachine("machineX");
     REQUIRE(mc != nullptr);
 
     auto machine = mc->getMachine();
@@ -47,11 +50,18 @@ TEST_CASE("FactoryController handles malformed topics gracefully") {
 
 TEST_CASE("FactoryController returns correct snapshot of sensor states", "[FactoryController][Snapshot]") {
     FactoryController factory;
+    factory.handleMessage("factory/machine0/state", R"({"state": "start"})");
+    factory.handleMessage("factory/machine1/state", R"({"state": "start"})");
+    factory.handleMessage("factory/machine2/state", R"({"state": "start"})");
 
     // Simulate messages from machines
     factory.handleMessage("factory/machine0/temp", R"({"temp": 12.5})");
     factory.handleMessage("factory/machine1/temp", R"({"temp": 78.0})");
     factory.handleMessage("factory/machine2/temp", R"({"temp": 91.3})");
+
+    factory.handleMessage("factory/machine0/state", R"({"state": "start"})");
+    factory.handleMessage("factory/machine1/state", R"({"state": "start"})");
+    factory.handleMessage("factory/machine2/state", R"({"state": "start"})");
 
     auto snapshot = factory.getSensorStates();
 

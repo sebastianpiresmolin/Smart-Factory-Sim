@@ -2,7 +2,22 @@
 
 Machine::Machine(const std::string& id) : id(id) {}
 
+void Machine::start() {
+    running = true;
+}
+
+void Machine::stop() {
+    running = false;
+}
+
+bool Machine::isRunning() const {
+    auto val = getSensorValue("state");
+    return val.has_value() && val.value() > 0.5;
+}
+
 void Machine::setSensorValue(const std::string& type, double value) {
+
+    if (!running) return;
     sensors[type] = value;
 
     if (type == "temp") {

@@ -5,9 +5,12 @@
 using Catch::Matchers::WithinAbs;
 
 TEST_CASE("Temperature sensor updates for multiple machines", "[TemperatureSensor]") {
-    FactoryController factory;
-
     SECTION("Each machine stores temperature independently") {
+        FactoryController factory;
+        // Start all machines first
+        factory.handleMessage("factory/machine0/state", R"({"state": "start"})");
+        factory.handleMessage("factory/machine1/state", R"({"state": "start"})");
+        factory.handleMessage("factory/machine2/state", R"({"state": "start"})");
         factory.handleMessage("factory/machine0/temp", R"({"temp": 5.0})");
         factory.handleMessage("factory/machine1/temp", R"({"temp": 22.5})");
         factory.handleMessage("factory/machine2/temp", R"({"temp": 90.0})");

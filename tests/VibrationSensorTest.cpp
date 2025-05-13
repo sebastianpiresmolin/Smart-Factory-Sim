@@ -7,6 +7,9 @@ using Catch::Matchers::WithinAbs;
 TEST_CASE("Vibration sensor behavior", "[VibrationSensor]") {
     MachineController mc("machine1");
 
+    // Ensure the machine is running before testing sensor behavior
+    mc.handleSensor("state", R"({"state": "start"})");
+
     SECTION("Normal vibration level") {
         mc.handleSensor("vibration", R"({"vibration": 3.2})");
         auto vibration = mc.getMachine()->getSensorValue("vibration");

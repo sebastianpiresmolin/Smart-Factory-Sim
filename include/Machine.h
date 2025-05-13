@@ -10,6 +10,10 @@ class Machine {
 public:
     explicit Machine(const std::string& id);
 
+    void start();
+    void stop();
+    bool isRunning() const;
+
     void setSensorValue(const std::string& type, double value);
     std::optional<double> getSensorValue(const std::string& type) const;
     std::unordered_map<std::string, double> getAllSensorValues() const;
@@ -25,6 +29,8 @@ public:
 private:
     std::string id;
     std::unordered_map<std::string, double> sensors;
+
+    bool running = true;
 
     bool overheating = false;
     bool tooCold = false;
