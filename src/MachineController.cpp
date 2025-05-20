@@ -1,23 +1,27 @@
 ﻿#include "MachineController.h"
 #include <iostream>
+#include <random>
 #include <nlohmann/json.hpp>
 
-MachineController::MachineController(const std::string& id)
-    : machineId(id), machine(std::make_shared<Machine>(id)) {}
+MachineController::MachineController(const std::string &id)
+    : machineId(id), machine(std::make_shared<Machine>(id)) {
+}
 
-void MachineController::handleSensor(const std::string& sensorType, const std::string& payload) {
+void MachineController::handleSensor(const std::string &sensorType, const std::string &payload) {
     if (sensorType == "temp") {
         handleTemperature(payload);
     } else if (sensorType == "vibration") {
         handleVibration(payload);
     } else if (sensorType == "state") {
         handleState(payload);
+    } else if (sensorType == "produced") {
+        handleProduced(payload);
     } else {
         std::cout << "[" << machineId << "] Unhandled sensor type: " << sensorType << "\n";
     }
 }
 
-void MachineController::handleTemperature(const std::string& payload) {
+void MachineController::handleTemperature(const std::string &payload) {
     try {
         if (!machine->isRunning()) {
             std::cout << "[" << machineId << "] Machine is OFF. Ignoring sensor data.\n";
@@ -42,12 +46,12 @@ void MachineController::handleTemperature(const std::string& payload) {
                 }
             }
         }
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         std::cerr << "[" << machineId << "] Failed to parse temperature JSON: " << ex.what() << "\n";
     }
 }
 
-void MachineController::handleVibration(const std::string& payload) {
+void MachineController::handleVibration(const std::string &payload) {
     try {
         if (!machine->isRunning()) {
             std::cout << "[" << machineId << "] Machine is OFF. Ignoring sensor data.\n";
@@ -67,17 +71,17 @@ void MachineController::handleVibration(const std::string& payload) {
                 std::cout << "[" << machineId << "] Vibration level is normal.\n";
             }
         }
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         std::cerr << "[" << machineId << "] Failed to parse vibration JSON: " << ex.what() << "\n";
     }
 }
 
-void MachineController::handleState(const std::string& payload) {
+void MachineController::handleState(const std::string &payload) {
     try {
         auto json = nlohmann::json::parse(payload);
         if (json.contains("state")) {
             std::string state = json["state"];
-            machine->setSensorValue("state", state == "start" ? 1.0 : 0.0);  // Store numeric form
+            machine->setSensorValue("state", state == "start" ? 1.0 : 0.0); // Store numeric form
 
             if (machine->isRunning()) {
                 std::cout << "[" << machineId << "] Machine is RUNNING\n";
@@ -85,8 +89,33 @@ void MachineController::handleState(const std::string& payload) {
                 std::cout << "[" << machineId << "] Machine is STOPPED\n";
             }
         }
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         std::cerr << "[" << machineId << "] Failed to parse state JSON: " << ex.what() << "\n";
+    }
+}
+
+void MachineController::handleProduced(const std::string &payload) {
+    if (!machine->isRunning()) {
+        return;
+    }
+
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(1, 100);
+    int chance = distr(gen);
+
+    if (chance >= 1 && chance <= 5) {
+        try {
+            machine->incrementLostMaterials();
+        } catch (const std::exception &ex) {
+            std::cerr << "[" << machineId << "] Failed to parse produced JSON: " << ex.what() << "\n";
+        }
+    } else {
+        try {
+            machine->incrementProduced();
+        } catch (const std::exception &ex) {
+            std::cerr << "[" << machineId << "] Failed to parse produced JSON: " << ex.what() << "\n";
+        }
     }
 }
 
