@@ -10,6 +10,14 @@ void Machine::stop() {
     running = false;
 }
 
+void Machine::incrementProduced() {
+    ++totalProduced;
+}
+
+int Machine::getTotalProduced() const {
+    return totalProduced;
+}
+
 bool Machine::isRunning() const {
     auto val = getSensorValue("state");
     return val.has_value() && val.value() > 0.5;

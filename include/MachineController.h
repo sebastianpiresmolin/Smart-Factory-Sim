@@ -11,6 +11,8 @@ public:
     explicit MachineController(const std::string& id);
     void handleSensor(const std::string& sensorType, const std::string& payload);
 
+    void handleProduced(const std::string& payload);
+
     std::shared_ptr<Machine> getMachine() const;
     std::string getMachineId() const;
 

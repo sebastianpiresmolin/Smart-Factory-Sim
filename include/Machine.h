@@ -18,6 +18,9 @@ public:
     std::optional<double> getSensorValue(const std::string& type) const;
     std::unordered_map<std::string, double> getAllSensorValues() const;
 
+    void incrementProduced();
+    int getTotalProduced() const;
+
     bool isOverheating() const;
     bool isTooCold() const;
 
@@ -36,6 +39,7 @@ private:
     bool tooCold = false;
 
     void evaluateTemperature(double value);
+    int totalProduced = 0;
 };
 
 #endif // MACHINE_H

@@ -12,6 +12,8 @@ void MachineController::handleSensor(const std::string& sensorType, const std::s
         handleVibration(payload);
     } else if (sensorType == "state") {
         handleState(payload);
+    } else if (sensorType == "produced") {
+        handleProduced(payload);
     } else {
         std::cout << "[" << machineId << "] Unhandled sensor type: " << sensorType << "\n";
     }
@@ -87,6 +89,17 @@ void MachineController::handleState(const std::string& payload) {
         }
     } catch (const std::exception& ex) {
         std::cerr << "[" << machineId << "] Failed to parse state JSON: " << ex.what() << "\n";
+    }
+}
+
+void MachineController::handleProduced(const std::string& payload) {
+    if (!machine->isRunning()) {
+        return;
+    }
+    try {
+        machine->incrementProduced();
+    } catch (const std::exception& ex) {
+        std::cerr << "[" << machineId << "] Failed to parse produced JSON: " << ex.what() << "\n";
     }
 }
 

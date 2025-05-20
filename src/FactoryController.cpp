@@ -57,7 +57,8 @@ nlohmann::json FactoryController::getSensorStates() const {
         if (machine) {
             snapshot[id] = {
                 { "sensors", machine->getAllSensorValues() },
-                { "state", machine->isRunning() ? "running" : "stopped" }
+                { "state", machine->isRunning() ? "running" : "stopped" },
+                { "totalProduced", machine->getTotalProduced()}
             };
         }
     }
