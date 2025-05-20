@@ -31,3 +31,30 @@ TEST_CASE("Machine stores and retrieves sensor values", "[Machine]") {
         REQUIRE(m.getSensorValue("pressure").value() == Approx(101.3));
     }
 }
+
+TEST_CASE("Machine counters increment correctly", "[Machine]") {
+    Machine m("m0");
+
+    SECTION("Produced increments") {
+        REQUIRE(m.getTotalProduced() == 0);
+        m.incrementProduced();
+        REQUIRE(m.getTotalProduced() == 1);
+        m.incrementProduced();
+        REQUIRE(m.getTotalProduced() == 2);
+    }
+
+    SECTION("Lost materials increments") {
+        REQUIRE(m.getLostMaterials() == 0);
+        m.incrementLostMaterials();
+        REQUIRE(m.getLostMaterials() == 1);
+        m.incrementLostMaterials();
+        REQUIRE(m.getLostMaterials() == 2);
+    }
+}
+
+TEST_CASE("Produced only increments when running", "[Machine]") {
+    Machine m("m1");
+    m.stop();
+    m.incrementProduced();
+    REQUIRE(m.getTotalProduced() == 1);
+}

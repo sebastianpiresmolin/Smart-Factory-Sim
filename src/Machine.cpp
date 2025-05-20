@@ -14,6 +14,9 @@ void Machine::incrementProduced() {
     ++totalProduced;
 }
 
+void Machine::incrementLostMaterials() { ++lostMaterials; }
+int Machine::getLostMaterials() const { return lostMaterials; }
+
 int Machine::getTotalProduced() const {
     return totalProduced;
 }
