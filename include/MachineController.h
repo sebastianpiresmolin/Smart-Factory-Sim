@@ -5,10 +5,16 @@
 #include <string>
 #include <memory>
 #include "Machine.h"
+#include "FactoryController.h"
+
+class FactoryController;
 
 class MachineController {
+    FactoryController* parentController = nullptr;
 public:
-    explicit MachineController(const std::string& id);
+    explicit MachineController(const std::string& id, FactoryController* parent = nullptr);
+    void setParentController(FactoryController* parent) { parentController = parent; }
+
     void handleSensor(const std::string& sensorType, const std::string& payload);
 
     void handleProduced(const std::string& payload);

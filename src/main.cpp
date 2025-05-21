@@ -1,11 +1,14 @@
 ﻿#include "MqttClientWrapper.h"
 #include "FactoryController.h"
 #include <iostream>
+#include <filesystem>
 
 const std::string SNAPSHOT_FILE = "../storage/factory_snapshot.json";
 
 int main() {
     auto factoryController = std::make_unique<FactoryController>();
+
+     std::filesystem::create_directories(std::filesystem::path(SNAPSHOT_FILE).parent_path());
 
     try {
         factoryController->loadSnapshot(SNAPSHOT_FILE);

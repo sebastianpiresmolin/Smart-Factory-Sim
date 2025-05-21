@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include "MachineController.h"
 
 void FactoryController::handleMessage(const std::string& topic, const std::string& payload) {
     std::string machineId = parseMachineId(topic);
@@ -14,7 +15,7 @@ void FactoryController::handleMessage(const std::string& topic, const std::strin
     }
 
     if (machines.find(machineId) == machines.end()) {
-        machines[machineId] = std::make_shared<MachineController>(machineId);
+        machines[machineId] = std::make_shared<MachineController>(machineId, this); // FIXED
     }
 
     machines[machineId]->handleSensor(sensorType, payload);
@@ -55,7 +56,7 @@ std::shared_ptr<MachineController> FactoryController::getOrCreateMachine(const s
     if (it != machines.end()) {
         return it->second;
     }
-    auto mc = std::make_shared<MachineController>(id);
+    auto mc = std::make_shared<MachineController>(id, this); // FIXED
     machines[id] = mc;
     return mc;
 }
@@ -79,6 +80,7 @@ nlohmann::json FactoryController::getSensorStates() const {
 }
 
 void FactoryController::saveSnapshot(const std::string& filename) const {
+    std::cout << "[DEBUG] Saving snapshot to: " << std::filesystem::absolute(filename) << "\n";
     nlohmann::json snapshot;
     for (const auto& [id, controller] : machines) {
         auto machine = controller->getMachine();
@@ -87,7 +89,16 @@ void FactoryController::saveSnapshot(const std::string& filename) const {
         }
     }
     std::ofstream out(filename);
+    if (!out.is_open()) {
+        std::cerr << "[ERROR] Could not open snapshot file for writing: " << filename << "\n";
+        throw std::runtime_error("Could not open snapshot file for writing: " + filename);
+    }
     out << snapshot.dump(4);
+    if (!out) {
+        std::cerr << "[ERROR] Failed to write snapshot to file: " << filename << "\n";
+        throw std::runtime_error("Failed to write snapshot to file: " + filename);
+    }
+    std::cout << "[DEBUG] Snapshot written successfully.\n";
 }
 
 void FactoryController::loadSnapshot(const std::string& filename) {
@@ -97,7 +108,7 @@ void FactoryController::loadSnapshot(const std::string& filename) {
     in >> snapshot;
     for (auto& [id, j] : snapshot.items()) {
         if (machines.find(id) == machines.end()) {
-            machines[id] = std::make_shared<MachineController>(id);
+            machines[id] = std::make_shared<MachineController>(id, this); // FIXED
         }
         auto machine = machines[id]->getMachine();
         if (machine) {
@@ -105,5 +116,3 @@ void FactoryController::loadSnapshot(const std::string& filename) {
         }
     }
 }
-
-

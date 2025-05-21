@@ -12,6 +12,7 @@ add_executable(machine_controller_tests
         ${PROJECT_SOURCE_DIR}/tests/MachineControllerTest.cpp
         ${PROJECT_SOURCE_DIR}/src/MachineController.cpp
         ${PROJECT_SOURCE_DIR}/src/Machine.cpp
+        ${PROJECT_SOURCE_DIR}/src/FactoryController.cpp
 )
 target_include_directories(machine_controller_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(machine_controller_tests PRIVATE Catch2::Catch2WithMain)
@@ -66,6 +67,7 @@ add_executable(machine_state_tests
         ${PROJECT_SOURCE_DIR}/tests/MachineStateTest.cpp
         ${PROJECT_SOURCE_DIR}/src/MachineController.cpp
         ${PROJECT_SOURCE_DIR}/src/Machine.cpp
+        ${PROJECT_SOURCE_DIR}/src/FactoryController.cpp
 )
 
 target_include_directories(machine_state_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)

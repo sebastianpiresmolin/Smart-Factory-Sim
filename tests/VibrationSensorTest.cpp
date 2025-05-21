@@ -5,7 +5,8 @@
 using Catch::Matchers::WithinAbs;
 
 TEST_CASE("Vibration sensor behavior", "[VibrationSensor]") {
-    MachineController mc("machine1");
+    FactoryController dummyFactory;
+    MachineController mc("machine1", &dummyFactory);
 
     // Ensure the machine is running before testing sensor behavior
     mc.handleSensor("state", R"({"state": "start"})");
