@@ -1,4 +1,10 @@
-﻿include(CTest)
+﻿include(FetchContent)
+FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.4 # or latest stable
+)
+FetchContent_MakeAvailable(Catch2)
 enable_testing()
 
 # MachineController tests
@@ -71,8 +77,32 @@ target_link_libraries(machine_state_tests PRIVATE
 
 add_test(NAME MachineStateTests COMMAND machine_state_tests)
 
+# Factory Persistence handling test
+add_executable(factory_persistance_test
+        ${PROJECT_SOURCE_DIR}/tests/FactoryPersistenceTest.cpp
+        ${PROJECT_SOURCE_DIR}/src/FactoryController.cpp
+        ${PROJECT_SOURCE_DIR}/src/MachineController.cpp
+        ${PROJECT_SOURCE_DIR}/src/Machine.cpp
+)
+
+target_include_directories(factory_persistance_test PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
+target_link_libraries(factory_persistance_test PRIVATE
+        Catch2::Catch2WithMain
+        nlohmann_json::nlohmann_json
+)
+
+add_test(NAME FactoryPersistenceTests COMMAND factory_persistance_test)
+
 
 # Optional meta target to build all test binaries
 add_custom_target(all_tests
-        DEPENDS machine_controller_tests temperature_sensor_tests factory_controller_tests machine_tests vibration_sensor_tests machine_state_tests
+        DEPENDS
+        machine_controller_tests
+        temperature_sensor_tests
+        factory_controller_tests
+        machine_tests
+        vibration_sensor_tests
+        machine_state_tests
+        factory_persistance_test
 )

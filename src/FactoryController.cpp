@@ -1,6 +1,7 @@
 ﻿#include "FactoryController.h"
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <nlohmann/json.hpp>
 
 void FactoryController::handleMessage(const std::string& topic, const std::string& payload) {
@@ -49,6 +50,16 @@ const std::unordered_map<std::string, std::shared_ptr<MachineController>>& Facto
     return machines;
 }
 
+std::shared_ptr<MachineController> FactoryController::getOrCreateMachine(const std::string& id) {
+    auto it = machines.find(id);
+    if (it != machines.end()) {
+        return it->second;
+    }
+    auto mc = std::make_shared<MachineController>(id);
+    machines[id] = mc;
+    return mc;
+}
+
 nlohmann::json FactoryController::getSensorStates() const {
     nlohmann::json snapshot;
 
@@ -65,6 +76,34 @@ nlohmann::json FactoryController::getSensorStates() const {
     }
 
     return snapshot;
+}
+
+void FactoryController::saveSnapshot(const std::string& filename) const {
+    nlohmann::json snapshot;
+    for (const auto& [id, controller] : machines) {
+        auto machine = controller->getMachine();
+        if (machine) {
+            snapshot[id] = machine->toJson();
+        }
+    }
+    std::ofstream out(filename);
+    out << snapshot.dump(4);
+}
+
+void FactoryController::loadSnapshot(const std::string& filename) {
+    std::ifstream in(filename);
+    if (!in) return;
+    nlohmann::json snapshot;
+    in >> snapshot;
+    for (auto& [id, j] : snapshot.items()) {
+        if (machines.find(id) == machines.end()) {
+            machines[id] = std::make_shared<MachineController>(id);
+        }
+        auto machine = machines[id]->getMachine();
+        if (machine) {
+            machine->fromJson(j);
+        }
+    }
 }
 
 
