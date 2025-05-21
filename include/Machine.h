@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <optional>
+#include <nlohmann/json_fwd.hpp>
 
 class Machine {
 public:
@@ -30,6 +31,10 @@ public:
 
 
     const std::string& getId() const;
+
+    nlohmann::json toJson() const;
+    void fromJson(const nlohmann::json& j);
+
 
 private:
     std::string id;
