@@ -1,5 +1,7 @@
 ﻿#include "Machine.h"
 
+#include <nlohmann/json.hpp>
+
 Machine::Machine(const std::string& id) : id(id) {}
 
 void Machine::start() {
@@ -51,6 +53,22 @@ std::optional<double> Machine::getSensorValue(const std::string& type) const {
 
 std::unordered_map<std::string, double> Machine::getAllSensorValues() const {
     return sensors;
+}
+
+nlohmann::json Machine::toJson() const {
+    return {
+            {"sensors", sensors},
+            {"state", running ? "running" : "stopped"},
+            {"totalProduced", totalProduced},
+            {"lostMaterials", lostMaterials}
+    };
+}
+
+void Machine::fromJson(const nlohmann::json& j) {
+    if (j.contains("sensors")) sensors = j.at("sensors").get<std::unordered_map<std::string, double>>();
+    running = (j.value("state", "stopped") == "running");
+    totalProduced = j.value("totalProduced", 0);
+    lostMaterials = j.value("lostMaterials", 0);
 }
 
 bool Machine::isExcessiveVibration() const {
