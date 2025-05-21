@@ -6,7 +6,8 @@
 using Catch::Matchers::Equals;
 
 TEST_CASE("MachineController handles machine state changes", "[MachineController][State]") {
-    MachineController mc("machineTest");
+    FactoryController dummyFactory;
+    MachineController mc("machineTest", &dummyFactory);
 
     SECTION("Initial state is stopped") {
         REQUIRE_FALSE(mc.getMachine()->isRunning());

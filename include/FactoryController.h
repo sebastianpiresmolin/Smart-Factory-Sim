@@ -9,6 +9,8 @@
 
 #include "MachineController.h"
 
+class MachineController;
+
 class FactoryController {
 public:
     virtual ~FactoryController() = default;

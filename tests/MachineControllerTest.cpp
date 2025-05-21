@@ -2,7 +2,8 @@
 #include "MachineController.h"
 
 TEST_CASE("MachineController basics", "[MachineController]") {
-    MachineController mc("machine42");
+    FactoryController dummyFactory;
+    MachineController mc("machine42", &dummyFactory);
 
     SECTION("Machine ID is stored correctly") {
         REQUIRE(mc.getMachineId() == "machine42");
