@@ -3,14 +3,14 @@
 #include <iostream>
 #include <filesystem>
 
-const std::string SNAPSHOT_FILE = "../storage/factory_snapshot.json";
+const std::string SNAPSHOT_FILE = "/app/storage/factory_snapshot.json";
 
 int main() {
     try {
         std::cout << "=== Main started ===" << std::endl;
         std::string address = "tcp://mosquitto:1883";
         std::string clientId = "smart_factory_simulator";
-        std::string topic = "factory/#";
+        std::string topic = "factory/+/+";
 
         auto factoryController = std::make_unique<FactoryController>();
 
@@ -25,7 +25,7 @@ int main() {
 
         MqttClientWrapper mqtt(address, clientId, topic);
         mqtt.setController(factoryController.get());
-
+        std::cout << "=== MQTT CLIENT CONNECTING TO: " << address << " ===" << std::endl;
         mqtt.start();
 
         std::cout << "Waiting for messages. Press Ctrl+C to quit..." << std::endl;

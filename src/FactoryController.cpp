@@ -80,7 +80,6 @@ nlohmann::json FactoryController::getSensorStates() const {
 }
 
 void FactoryController::saveSnapshot(const std::string& filename) const {
-    std::cout << "[DEBUG] Saving snapshot to: " << std::filesystem::absolute(filename) << "\n";
     nlohmann::json snapshot;
     for (const auto& [id, controller] : machines) {
         auto machine = controller->getMachine();
@@ -98,7 +97,6 @@ void FactoryController::saveSnapshot(const std::string& filename) const {
         std::cerr << "[ERROR] Failed to write snapshot to file: " << filename << "\n";
         throw std::runtime_error("Failed to write snapshot to file: " + filename);
     }
-    std::cout << "[DEBUG] Snapshot written successfully.\n";
 }
 
 void FactoryController::loadSnapshot(const std::string& filename) {

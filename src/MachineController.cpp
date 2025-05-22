@@ -46,7 +46,7 @@ void MachineController::handleTemperature(const std::string &payload) {
                 }
             }
             // Save after temperature handled
-            if (parentController) parentController->saveSnapshot("../storage/factory_snapshot.json");
+            if (parentController) parentController->saveSnapshot("/app/storage/factory_snapshot.json");
         }
     } catch (const std::exception &ex) {
         std::cerr << "[" << machineId << "] Failed to parse temperature JSON: " << ex.what() << "\n";
@@ -73,7 +73,7 @@ void MachineController::handleVibration(const std::string &payload) {
                 std::cout << "[" << machineId << "] Vibration level is normal.\n";
             }
             // Save after vibration handled
-            if (parentController) parentController->saveSnapshot("../storage/factory_snapshot.json");
+            if (parentController) parentController->saveSnapshot("/app/storage/factory_snapshot.json");
         }
     } catch (const std::exception &ex) {
         std::cerr << "[" << machineId << "] Failed to parse vibration JSON: " << ex.what() << "\n";
@@ -93,7 +93,7 @@ void MachineController::handleState(const std::string &payload) {
                 std::cout << "[" << machineId << "] Machine is STOPPED\n";
             }
             // Save after state handled
-            if (parentController) parentController->saveSnapshot("../storage/factory_snapshot.json");
+            if (parentController) parentController->saveSnapshot("/app/storage/factory_snapshot.json");
         }
     } catch (const std::exception &ex) {
         std::cerr << "[" << machineId << "] Failed to parse state JSON: " << ex.what() << "\n";
@@ -113,14 +113,14 @@ void MachineController::handleProduced(const std::string &payload) {
     if (chance >= 1 && chance <= 5) {
         try {
             machine->incrementLostMaterials();
-            if (parentController) parentController->saveSnapshot("../storage/factory_snapshot.json");
+            if (parentController) parentController->saveSnapshot("/app/storage/factory_snapshot.json");
         } catch (const std::exception &ex) {
             std::cerr << "[" << machineId << "] Failed to parse produced JSON: " << ex.what() << "\n";
         }
     } else {
         try {
             machine->incrementProduced();
-            if (parentController) parentController->saveSnapshot("../storage/factory_snapshot.json");
+            if (parentController) parentController->saveSnapshot("/app/storage/factory_snapshot.json");
         } catch (const std::exception &ex) {
             std::cerr << "[" << machineId << "] Failed to parse produced JSON: " << ex.what() << "\n";
         }
