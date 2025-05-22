@@ -12,17 +12,19 @@ public:
 
     void start();
     void stop();
-    void setController(FactoryController* controller);  // 👈 Add this
+    void setController(FactoryController* controller);
 
     void message_arrived(mqtt::const_message_ptr msg) override;
 
     void publishSensorData(const std::string& topic, const std::string& message);
 
+    void connection_lost(const std::string& cause) override;
+
 private:
     mqtt::async_client client;
     mqtt::connect_options connOpts;
     std::string topic;
-    FactoryController* factoryController = nullptr;  // 👈 Use pointer
+    FactoryController* factoryController = nullptr;
 };
 
 

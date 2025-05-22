@@ -1,0 +1,34 @@
+﻿services:
+  smart-factory-sim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - nodered
+      - mosquitto
+    networks:
+      - factorynet
+
+  nodered:
+    image: nodered/node-red:3.1
+    environment:
+     - FLOWS_FILE=flows.json
+    volumes:
+      - ./third_party/flows.json:/data/flows.json
+    ports:
+      - "1880:1880"
+    networks:
+      - factorynet
+
+  mosquitto:
+    image: eclipse-mosquitto
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    ports:
+      - "1883:1883"
+    networks:
+      - factorynet
+
+networks:
+  factorynet:
+    driver: bridge

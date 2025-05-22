@@ -12,7 +12,6 @@ enable_testing()
 
 # vcpkg dependencies
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(Catch2 CONFIG REQUIRED)
 
 # Third-party paths
 set(PAHO_CPP_BUILD ${CMAKE_SOURCE_DIR}/third_party/paho.mqtt.cpp/build)
@@ -46,9 +45,8 @@ add_executable(smart_factory_sim
 )
 
 target_link_libraries(smart_factory_sim PRIVATE
-        paho-mqttpp3-static
-        paho-mqtt3a-static
-        ws2_32
+        paho-mqttpp3
+        paho-mqtt3a
         nlohmann_json::nlohmann_json
 )
 
