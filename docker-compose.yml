@@ -3,6 +3,9 @@
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./storage:/app/storage
+    user: "0:0"
     depends_on:
       - nodered
       - mosquitto

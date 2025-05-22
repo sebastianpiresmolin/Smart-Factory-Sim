@@ -26,7 +26,7 @@
         "once": true,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"temp\":7.8}",
+        "payload": "{\"temp\":7.5}",
         "payloadType": "json",
         "x": 390,
         "y": 320,
