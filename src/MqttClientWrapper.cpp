@@ -21,16 +21,25 @@ void MqttClientWrapper::stop() {
 }
 
 void MqttClientWrapper::message_arrived(mqtt::const_message_ptr msg) {
-    if (factoryController) {
-        try {
+    std::cout << "[DEBUG] Entered message_arrived" << std::endl;
+    try {
+        std::cout << "Received message on topic: " << msg->get_topic()
+                  << " payload: " << msg->get_payload_str() << std::endl;
+        if (factoryController) {
+            std::cout << "[DEBUG] Calling controller->handleMessage()" << std::endl;
             factoryController->handleMessage(msg->get_topic(), msg->get_payload());
-
+            std::cout << "[DEBUG] Called handleMessage, now getSensorStates()" << std::endl;
             auto snapshot = factoryController->getSensorStates();
+            std::cout << "[DEBUG] Got snapshot, now publishSensorData()" << std::endl;
             publishSensorData("factory/state_snapshot", snapshot.dump(2));
-        } catch (const std::exception& e) {
-            std::cerr << "Error processing message: " << e.what() << std::endl;
         }
+        std::cout << "[DEBUG] Message handler completed safely." << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] Error processing message: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "[ERROR] Unknown error processing message!" << std::endl;
     }
+    std::cout << "[DEBUG] Leaving message_arrived" << std::endl;
 }
 
 void MqttClientWrapper::publishSensorData(const std::string &topic, const std::string &message) {
@@ -44,3 +53,6 @@ void MqttClientWrapper::publishSensorData(const std::string &topic, const std::s
     }
 }
 
+void MqttClientWrapper::connection_lost(const std::string& cause) {
+    std::cerr << "Connection lost! Cause: " << cause << std::endl;
+}
